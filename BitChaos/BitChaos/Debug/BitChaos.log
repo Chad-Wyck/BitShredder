@@ -1,0 +1,6 @@
+﻿  Source.cpp
+E:\Repos\BitChaos\BitChaos\BitChaos\Source.cpp(39,19): warning C4244: 'initializing': conversion from 'std::streamoff' to 'size_t', possible loss of data
+E:\Repos\BitChaos\BitChaos\BitChaos\Source.cpp(75,20): warning C4018: '<': signed/unsigned mismatch
+E:\Repos\BitChaos\BitChaos\BitChaos\Source.cpp(89,37): warning C4267: 'initializing': conversion from 'size_t' to 'uint16_t', possible loss of data
+E:\Repos\BitChaos\BitChaos\BitChaos\Source.cpp(98,37): warning C4267: 'initializing': conversion from 'size_t' to 'uint16_t', possible loss of data
+  BitChaos.vcxproj -> E:\Repos\BitChaos\BitChaos\Debug\BitChaos.exe
