@@ -87,18 +87,22 @@ void ScrambleUp(char data[], size_t filesize, char bitMask) {
 
 void Encrypt(char data[], size_t filesize, string pass) {
 	uint16_t passLength = pass.length();
+	pass.append(pass[0], 1);
 	
 	for (int i = 0; i < passLength; i++) {
-		ScrambleDown(data, filesize, pass[i]);
-		ScrambleUp(data, filesize, ~pass[i]);
+		char bitMask = pass[i] ^ pass[i + 1];
+		ScrambleDown(data, filesize, bitMask);
+		ScrambleUp(data, filesize, ~bitMask);
 	}
 }
 
 void Decrypt(char data[], size_t filesize, string pass) {
 	uint16_t passLength = pass.length();
+	pass.append(pass[0], 1);
 
 	for (int i = passLength - 1; i >= 0; i--) {
-		ScrambleUp(data, filesize, pass[i]);
-		ScrambleDown(data, filesize, ~pass[i]);
+		char bitMask = pass[i] ^ pass[i + 1];
+		ScrambleUp(data, filesize, bitMask);
+		ScrambleDown(data, filesize, ~bitMask);
 	}
 }
