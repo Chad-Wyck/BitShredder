@@ -93,7 +93,13 @@ void BitFlip(char data[], size_t filesize, char bitMask) {
 
 void Encrypt(char data[], size_t filesize, string pass) {
 	uint16_t passLength = pass.length();
-	pass.append(pass[0], 1);
+
+	char first = pass[0];
+	for (int i = 0; i < passLength - 1; i++)
+		pass[i] = (pass[i] & 0xF) | (pass[i + 1] & ~0xF);
+	pass[passLength - 1] = (pass[passLength - 1] & 0xF) | (first & ~0xF);
+
+	pass.append(1, 0xb01010101);
 
 	for (int i = 0; i < passLength; i++) {
 		char bitMask = pass[i] ^ pass[i + 1];
@@ -105,7 +111,13 @@ void Encrypt(char data[], size_t filesize, string pass) {
 
 void Decrypt(char data[], size_t filesize, string pass) {
 	uint16_t passLength = pass.length();
-	pass.append(pass[0], 1);
+
+	char first = pass[0];
+	for (int i = 0; i < passLength - 1; i++)
+		pass[i] = (pass[i] & 0xF) | (pass[i + 1] & ~0xF);
+	pass[passLength - 1] = (pass[passLength - 1] & 0xF) | (first & ~0xF);
+	
+	pass.append(1, 0xb01010101);
 
 	for (int i = passLength - 1; i >= 0; i--) {
 		char bitMask = pass[i] ^ pass[i + 1];
