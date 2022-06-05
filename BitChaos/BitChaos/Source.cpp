@@ -10,6 +10,7 @@ void Encrypt(char data[], size_t filesize, string pass);
 void Decrypt(char data[], size_t filesize, string pass);
 void ScrambleUp(char data[], size_t filesize, char bitMask);
 void ScrambleDown(char data[], size_t filesize, char bitMask);
+void BitFlip(char data[], size_t filesize, char bitMask);
 
 int main()
 {
@@ -33,7 +34,7 @@ int main()
 		cout << "Enter File Name: ";
 		cin >> filename;
 
-		std::ifstream infile;
+		ifstream infile;
 		infile.open(filename, std::ios::binary);
 		infile.seekg(0, std::ios::end);
 		size_t filesize = infile.tellg();
@@ -62,7 +63,7 @@ int main()
 		cout << "Enter New File Name: ";
 		cin >> outfilename;
 
-		std::ofstream outfile(outfilename, std::ofstream::binary);
+		ofstream outfile(outfilename, std::ofstream::binary);
 		outfile.write(data, filesize);
 		outfile.close();
 		delete[] data;
@@ -85,14 +86,20 @@ void ScrambleUp(char data[], size_t filesize, char bitMask) {
 	data[0] = (data[0] & ~bitMask) | (first & bitMask);
 }
 
+void BitFlip(char data[], size_t filesize, char bitMask) {
+	for (int i = 0; i < filesize; i++)
+		data[i] = (data[i] & ~bitMask) | (~data[i] & bitMask);
+}
+
 void Encrypt(char data[], size_t filesize, string pass) {
 	uint16_t passLength = pass.length();
 	pass.append(pass[0], 1);
-	
+
 	for (int i = 0; i < passLength; i++) {
 		char bitMask = pass[i] ^ pass[i + 1];
 		ScrambleDown(data, filesize, bitMask);
 		ScrambleUp(data, filesize, ~bitMask);
+		BitFlip(data, filesize, bitMask);
 	}
 }
 
@@ -104,5 +111,6 @@ void Decrypt(char data[], size_t filesize, string pass) {
 		char bitMask = pass[i] ^ pass[i + 1];
 		ScrambleUp(data, filesize, bitMask);
 		ScrambleDown(data, filesize, ~bitMask);
+		BitFlip(data, filesize, bitMask);
 	}
 }
