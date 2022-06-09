@@ -19,7 +19,7 @@ int main()
 	string filename;
 	char password[256];
 	int option;
-
+	
 	while (running) {
 		cout << endl << "Enter 0 to Decrypt or 1 to Encrypt (Anything else to close application): ";
 		cin >> option;
@@ -67,6 +67,7 @@ int main()
 		outfile.close();
 		delete[] data;
 	}
+	
 }
 
 void ScrambleDown(char data[], size_t filesize, char bitMask) {
@@ -88,10 +89,10 @@ void ScrambleUp(char data[], size_t filesize, char bitMask) {
 void Encrypt(char data[], size_t filesize, string pass) {
 	uint16_t passLength = pass.length();
 
-	char first = pass[0];
-	for (int i = 0; i < passLength - 1; i++)
-		pass[i] = (pass[i] & 0xF) | (pass[i + 1] & ~0xF);
-	pass[passLength - 1] = (pass[passLength - 1] & 0xF) | (first & ~0xF);
+	for (int i = 0; i < passLength - 1; i++) {
+		int offset = i % 8;
+		pass[i] = (pass[i] >> offset) | (pass[i] << (8 - offset));
+	}
 
 	pass.append(1, 0xb01010101);
 
@@ -105,10 +106,10 @@ void Encrypt(char data[], size_t filesize, string pass) {
 void Decrypt(char data[], size_t filesize, string pass) {
 	uint16_t passLength = pass.length();
 
-	char first = pass[0];
-	for (int i = 0; i < passLength - 1; i++)
-		pass[i] = (pass[i] & 0xF) | (pass[i + 1] & ~0xF);
-	pass[passLength - 1] = (pass[passLength - 1] & 0xF) | (first & ~0xF);
+	for (int i = 0; i < passLength - 1; i++) {
+		int offset = i % 8;
+		pass[i] = (pass[i] >> offset) | (pass[i] << (8 - offset));
+	}
 	
 	pass.append(1, 0xb01010101);
 
